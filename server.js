@@ -1,9 +1,11 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const { Low } = require("lowdb");
 const { JSONFile } = require("lowdb/node");
 
 const app = express();
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
