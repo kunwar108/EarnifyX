@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EarnifyX</title>
+
+  <style>
+
+    body{
+      background:#111;
+      color:white;
+      font-family:Arial;
+      padding:20px;
+    }
+
+    h1{
+      color:cyan;
+    }
+
+    input{
+      width:90%;
+      padding:12px;
+      margin:10px 0;
+      border-radius:10px;
+      border:none;
+    }
+
+    button{
+      padding:12px 20px;
+      border:none;
+      border-radius:10px;
+      background:cyan;
+      font-size:18px;
+      font-weight:bold;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>EarnifyX Register 🚀</h1>
+
+<input type="text" id="name" placeholder="Enter Name">
+
+<input type="email" id="email" placeholder="Enter Email">
+
+<input type="password" id="password" placeholder="Enter Password">
+
+<button id="registerBtn">
+Register
+</button>
+
+<script>
+
+document.getElementById("registerBtn").addEventListener("click", async () => {
+
+  alert("Button Working");
+
+  const name = document.getElementById("name").value;
+
+  const email = document.getElementById("email").value;
+
+  const password = document.getElementById("password").value;
+
+  try {
+
+    const response = await fetch("http://127.0.0.1:3000/register", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        name,
+        email,
+        password
+      })
+
+    });
+
+    const data = await response.json();
+
+    alert(data.message);
+
+  } catch (error) {
+
+    alert("Error Connecting Backend");
+
+    console.log(error);
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EarnifyX Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+
+<h1>EarnifyX</h1>
+
+<h2>Login</h2>
+
+<input type="text" id="username" placeholder="Username">
+
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<br><br>
+
+<a href="signup.html" style="color:#00ff99;">
+Create account
+</a>
+
+</div>
+
+<script>
+
+async function login(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const response = await fetch("/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            username,
+            password
+        })
+    });
+
+    const data = await response.json();
+
+    if(data.success){
+
+        localStorage.setItem(
+            "username",
+            data.username
+        );
+
+        window.location.href="dashboard.html";
+
+    }else{
+        alert("Invalid Login");
+    }
+}
+
+</script>
+
+</body>
+</html>

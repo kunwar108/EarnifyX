@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EarnifyX Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+
+<h1>EarnifyX</h1>
+
+<h2>Signup</h2>
+
+<input type="text"
+id="username"
+placeholder="Username">
+
+<input type="password"
+id="password"
+placeholder="Password">
+
+<input type="text"
+id="referral"
+placeholder="Referral Username">
+
+<button onclick="signup()">
+Signup
+</button>
+
+<br><br>
+
+<a href="login.html"
+style="color:#00ff99;">
+Already have account?
+</a>
+
+</div>
+
+<script>
+
+async function signup(){
+
+    const username =
+    document.getElementById(
+        "username"
+    ).value;
+
+    const password =
+    document.getElementById(
+        "password"
+    ).value;
+
+    const referral =
+    document.getElementById(
+        "referral"
+    ).value;
+
+    const response =
+    await fetch("/signup",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+            username,
+            password,
+            referral
+        })
+    });
+
+    const data =
+    await response.text();
+
+    alert(data);
+
+    if(data==="Signup successful"){
+
+        window.location.href =
+        "login.html";
+    }
+}
+
+</script>
+
+</body>
+</html>

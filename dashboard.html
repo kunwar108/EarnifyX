@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EarnifyX Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+
+<h1>EarnifyX</h1>
+
+<h2 id="welcome"></h2>
+
+<h3>Wallet Balance</h3>
+
+<h1 id="balance">₹0</h1>
+
+<h3>Your Referral Code</h3>
+
+<h2 id="ref"></h2>
+
+<button onclick="dailyReward()">
+Claim Daily Reward
+</button>
+
+<br><br>
+
+<button onclick="spinWheel()">
+Spin & Earn
+</button>
+
+<br><br>
+
+<button onclick="goTasks()">
+Tasks
+</button>
+
+<br><br>
+
+<button onclick="goWithdraw()">
+Withdraw
+</button>
+
+<br><br>
+
+<button onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<script>
+
+const username =
+localStorage.getItem("username");
+
+if(!username){
+
+    window.location.href =
+    "login.html";
+}
+
+async function loadUser(){
+
+    const response =
+    await fetch("/user/" + username);
+
+    const user =
+    await response.json();
+
+    document.getElementById(
+        "welcome"
+    ).innerText =
+    "Welcome " + user.username;
+
+    document.getElementById(
+        "balance"
+    ).innerText =
+    "₹" + user.balance;
+
+    document.getElementById(
+        "ref"
+    ).innerText =
+    user.username;
+}
+
+loadUser();
+
+async function dailyReward(){
+
+    const response =
+    await fetch("/daily-reward",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+            username
+        })
+    });
+
+    const data =
+    await response.json();
+
+    if(data.success){
+
+        document.getElementById(
+            "balance"
+        ).innerText =
+        "₹" + data.balance;
+
+        alert(
+            "₹10 Added Successfully"
+        );
+    }
+}
+
+async function spinWheel(){
+
+    const response =
+    await fetch("/spin",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+            username
+        })
+    });
+
+    const data =
+    await response.json();
+
+    if(data.success){
+
+        document.getElementById(
+            "balance"
+        ).innerText =
+        "₹" + data.balance;
+
+        alert(
+            "You won ₹" + data.reward
+        );
+    }
+}
+
+function goTasks(){
+
+    window.location.href =
+    "task.html";
+}
+
+function goWithdraw(){
+
+    window.location.href =
+    "withdraw.html";
+}
+
+function logout(){
+
+    localStorage.removeItem(
+        "username"
+    );
+
+    window.location.href =
+    "login.html";
+}
+
+</script>
+
+</body>
+</html>

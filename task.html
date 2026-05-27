@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+
+<h1>EarnifyX Tasks</h1>
+
+<h3>Complete Tasks & Earn</h3>
+
+<button onclick="completeTask(20)">
+Watch Video → Earn ₹20
+</button>
+
+<br><br>
+
+<button onclick="completeTask(30)">
+Install App → Earn ₹30
+</button>
+
+<br><br>
+
+<button onclick="completeTask(50)">
+Join Telegram → Earn ₹50
+</button>
+
+<br><br>
+
+<button onclick="goBack()">
+Back
+</button>
+
+</div>
+
+<script>
+
+const username =
+localStorage.getItem("username");
+
+async function completeTask(reward){
+
+    const response =
+    await fetch("/daily-reward",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+            username
+        })
+    });
+
+    const data =
+    await response.json();
+
+    alert(
+        "Task Completed! ₹" +
+        reward +
+        " Earned"
+    );
+}
+
+function goBack(){
+
+    window.location.href =
+    "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>
