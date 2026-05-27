@@ -11,256 +11,244 @@ app.use(express.static(__dirname));
 const adapter = new JSONFile("db.json");
 
 const db = new Low(adapter, {
-    users: [],
-    withdraws: []
+users: [],
+withdraws: []
 });
 
 async function start(){
 
-    await db.read();
+await db.read();
 
-    // SIGNUP
+app.post("/signup", async (req,res)=>{
 
-    app.post("/signup", async (req,res)=>{
+const {
+username,
+password,
+referral
+} = req.body;
 
-        const {
-            username,
-            password,
-            referral
-        } = req.body;
+const userExists =
+db.data.users.find(
+u => u.username === username
+);
 
-        const userExists =
-        db.data.users.find(
-            u => u.username === username
-        );
+if(userExists){
 
-        if(userExists){
+return res.send(
+"User already exists"
+);
+}
 
-            return res.send(
-                "User already exists"
-            );
-        }
+let balance = 100;
 
-        let balance = 100;
+if(referral){
 
-        if(referral){
+const refUser =
+db.data.users.find(
+u => u.username === referral
+);
 
-            const refUser =
-            db.data.users.find(
-                u => u.username === referral
-            );
+if(refUser){
 
-            if(refUser){
+refUser.balance += 50;
 
-                refUser.balance += 50;
+balance += 50;
+}
+}
 
-                balance += 50;
-            }
-        }
+db.data.users.push({
+username,
+password,
+balance,
+referral
+});
 
-        db.data.users.push({
-            username,
-            password,
-            balance,
-            referral
-        });
+await db.write();
 
-        await db.write();
+res.send(
+"Signup successful"
+);
+});
 
-        res.send(
-            "Signup successful"
-        );
-    });
+app.post("/login", async (req,res)=>{
 
-    // LOGIN
+const {
+username,
+password
+} = req.body;
 
-    app.post("/login", async (req,res)=>{
+const user =
+db.data.users.find(
+u =>
+u.username === username &&
+u.password === password
+);
 
-        const {
-            username,
-            password
-        } = req.body;
+if(user){
 
-        const user =
-        db.data.users.find(
-            u =>
-            u.username === username &&
-            u.password === password
-        );
+res.json({
+success:true,
+username:user.username,
+balance:user.balance
+});
 
-        if(user){
+}else{
 
-            res.json({
-                success:true,
-                username:user.username,
-                balance:user.balance
-            });
+res.json({
+success:false
+});
+}
+});
 
-        }else{
+app.get("/user/:username", async (req,res)=>{
 
-            res.json({
-                success:false
-            });
-        }
-    });
+const user =
+db.data.users.find(
+u => u.username ===
+req.params.username
+);
 
-    // GET USER
+if(user){
 
-    app.get("/user/:username", async (req,res)=>{
+res.json(user);
 
-        const user =
-        db.data.users.find(
-            u => u.username ===
-            req.params.username
-        );
+}else{
 
-        if(user){
+res.send("User not found");
+}
+});
 
-            res.json(user);
+app.post("/daily-reward", async (req,res)=>{
 
-        }else{
+const { username } = req.body;
 
-            res.send("User not found");
-        }
-    });
+const user =
+db.data.users.find(
+u => u.username === username
+);
 
-    // DAILY REWARD
+if(!user){
 
-    app.post("/daily-reward", async (req,res)=>{
+return res.send(
+"User not found"
+);
+}
 
-        const { username } = req.body;
+user.balance += 10;
 
-        const user =
-        db.data.users.find(
-            u => u.username === username
-        );
+await db.write();
 
-        if(!user){
+res.json({
+success:true,
+balance:user.balance
+});
+});
 
-            return res.send(
-                "User not found"
-            );
-        }
+app.post("/spin", async (req,res)=>{
 
-        user.balance += 10;
+const { username } = req.body;
 
-        await db.write();
+const user =
+db.data.users.find(
+u => u.username === username
+);
 
-        res.json({
-            success:true,
-            balance:user.balance
-        });
-    });
+if(!user){
 
-    // SPIN
+return res.send(
+"User not found"
+);
+}
 
-    app.post("/spin", async (req,res)=>{
+const rewards =
+[5,10,20,50];
 
-        const { username } = req.body;
+const randomReward =
+rewards[
+Math.floor(
+Math.random() *
+rewards.length
+)
+];
 
-        const user =
-        db.data.users.find(
-            u => u.username === username
-        );
+user.balance += randomReward;
 
-        if(!user){
+await db.write();
 
-            return res.send(
-                "User not found"
-            );
-        }
+res.json({
+success:true,
+reward:randomReward,
+balance:user.balance
+});
+});
 
-        const rewards =
-        [5,10,20,50];
+app.post("/withdraw", async (req,res)=>{
 
-        const randomReward =
-        rewards[
-            Math.floor(
-                Math.random() *
-                rewards.length
-            )
-        ];
+const {
+username,
+amount,
+upi
+} = req.body;
 
-        user.balance += randomReward;
+const user =
+db.data.users.find(
+u => u.username === username
+);
 
-        await db.write();
+if(!user){
 
-        res.json({
-            success:true,
-            reward:randomReward,
-            balance:user.balance
-        });
-    });
+return res.send(
+"User not found"
+);
+}
 
-    // WITHDRAW
+if(user.balance < amount){
 
-    app.post("/withdraw", async (req,res)=>{
+return res.send(
+"Insufficient Balance"
+);
+}
 
-        const {
-            username,
-            amount,
-            upi
-        } = req.body;
+user.balance -= amount;
 
-        const user =
-        db.data.users.find(
-            u => u.username === username
-        );
+db.data.withdraws.push({
+username,
+amount,
+upi,
+status:"Pending"
+});
 
-        if(!user){
+await db.write();
 
-            return res.send(
-                "User not found"
-            );
-        }
+res.send(
+"Withdraw Request Submitted"
+);
+});
 
-        if(user.balance < amount){
+app.get("/admin/users", async (req,res)=>{
 
-            return res.send(
-                "Insufficient Balance"
-            );
-        }
+res.json(
+db.data.users
+);
+});
 
-        user.balance -= amount;
+app.get("/admin/withdraws", async (req,res)=>{
 
-        db.data.withdraws.push({
-            username,
-            amount,
-            upi,
-            status:"Pending"
-        });
+res.json(
+db.data.withdraws
+);
+});
 
-        await db.write();
+const PORT =
+process.env.PORT || 3000;
 
-        res.send(
-            "Withdraw Request Submitted"
-        );
-    });
+app.listen(PORT, ()=>{
 
-    // ADMIN USERS
+console.log(
+"Server running on port " + PORT
+);
+});
 
-    app.get("/admin/users", async (req,res)=>{
-
-        res.json(
-            db.data.users
-        );
-    });
-
-    // ADMIN WITHDRAWS
-
-    app.get("/admin/withdraws", async (req,res)=>{
-
-        res.json(
-            db.data.withdraws
-        );
-    });
-
-    app.listen(3000, ()=>{
-
-        console.log(
-            "Server running on port 3000"
-        );
-    });
 }
 
 start();
