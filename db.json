@@ -1,30 +1,4 @@
 {
-  "users": [
-    {
-      "username": "ayush2",
-      "password": "12345",
-      "balance": 130,
-      "referral": "abhay108"
-    },
-    {
-      "username": "ayush3",
-      "password": "12345",
-      "balance": 115,
-      "referral": "ayush2"
-    }
-  ],
-  "withdraws": [
-    {
-      "username": "ayush2",
-      "amount": 50,
-      "upi": "abhaychauhan9555@oksbi",
-      "status": "Pending"
-    },
-    {
-      "username": "ayush3",
-      "amount": 50,
-      "upi": "abhaychauhan9555@oksbi",
-      "status": "Pending"
-    }
-  ]
+  "users": [],
+  "withdraws": []
 }
