@@ -102,10 +102,13 @@ Claim ₹10 Reward
 
 <div class="box">
 
-<h2>Withdraw</h2>
+<h2>Withdraw Money</h2>
 
-<button>
-Withdraw Money
+<input type="text" id="upi"
+placeholder="Enter UPI ID">
+
+<button onclick="withdrawMoney()">
+Request Withdraw
 </button>
 
 </div>
@@ -145,6 +148,24 @@ copyText.select();
 document.execCommand("copy");
 
 alert("Referral Code Copied 🚀");
+
+}
+
+function withdrawMoney(){
+
+let upi =
+document.getElementById("upi").value;
+
+if(upi==""){
+
+alert("Enter UPI ID");
+
+}
+else{
+
+alert("Withdraw Request Submitted ✅");
+
+}
 
 }
 
