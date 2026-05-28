@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard</title>
+<title>Earnify Dashboard</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -35,6 +35,11 @@ h1{
 color:#00ff99;
 }
 
+.balance{
+font-size:35px;
+color:#00ff99;
+}
+
 </style>
 </head>
 
@@ -43,24 +48,51 @@ color:#00ff99;
 <h1>Earnify Dashboard 🚀</h1>
 
 <div class="box">
+
 <h2 id="user"></h2>
-<h2>Balance: ₹50</h2>
+
+<h2 class="balance">
+₹ <span id="money">50</span>
+</h2>
+
 </div>
 
 <div class="box">
-<h2>Daily Tasks</h2>
 
-<button>Watch Ads</button>
+<h2>Daily Reward</h2>
 
-<button>Complete Offer</button>
+<button onclick="dailyReward()">
+Claim ₹10 Reward
+</button>
 
-<button>Refer & Earn</button>
 </div>
 
 <div class="box">
+
+<h2>Tasks</h2>
+
+<button>
+Watch Ads
+</button>
+
+<button>
+Complete Offers
+</button>
+
+<button>
+Refer Friends
+</button>
+
+</div>
+
+<div class="box">
+
 <h2>Withdraw</h2>
 
-<button>Withdraw Money</button>
+<button>
+Withdraw Money
+</button>
+
 </div>
 
 <script>
@@ -69,6 +101,18 @@ let email = localStorage.getItem("userEmail");
 
 document.getElementById("user").innerHTML =
 "Welcome: " + email;
+
+let balance = 50;
+
+function dailyReward(){
+
+balance = balance + 10;
+
+document.getElementById("money").innerHTML = balance;
+
+alert("₹10 Added Successfully 🔥");
+
+}
 
 </script>
 
