@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Earnify Signup</title>
+<title>Signup</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,51 +11,34 @@
 body{
 background:#0f172a;
 font-family:Arial;
-text-align:center;
-padding-top:80px;
+padding:20px;
 color:white;
 }
 
 .box{
 background:#1e293b;
-width:300px;
-margin:auto;
-padding:30px;
+padding:20px;
 border-radius:15px;
-}
-
-h1{
-color:#22c55e;
+margin-top:50px;
 }
 
 input{
-width:90%;
+width:100%;
 padding:12px;
-margin:10px 0;
+margin-top:10px;
 border:none;
 border-radius:10px;
-font-size:16px;
 }
 
 button{
-width:95%;
+width:100%;
 padding:12px;
+margin-top:20px;
 background:#22c55e;
 border:none;
 border-radius:10px;
 font-size:18px;
 color:white;
-margin-top:10px;
-}
-
-p{
-margin-top:20px;
-font-size:14px;
-}
-
-a{
-color:#22c55e;
-text-decoration:none;
 }
 
 </style>
@@ -68,20 +51,69 @@ text-decoration:none;
 
 <h1>Create Account 🚀</h1>
 
-<input type="text" placeholder="Enter Username">
+<input type="email" id="email" placeholder="Email">
 
-<input type="email" placeholder="Enter Email">
+<input type="password" id="password" placeholder="Password">
 
-<input type="password" placeholder="Enter Password">
-
-<button>Create Account</button>
-
-<p>
-Already have account?
-<a href="login.html">Login</a>
-</p>
+<button onclick="signup()">
+Signup
+</button>
 
 </div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth, createUserWithEmailAndPassword }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA-NBfTcaVj46RL-1kUeBsIqFszj2-deyA",
+
+authDomain: "earnify-8200f.firebaseapp.com",
+
+projectId: "earnify-8200f",
+
+storageBucket: "earnify-8200f.firebasestorage.app",
+
+messagingSenderId: "394402338930",
+
+appId: "1:394402338930:web:840ab87361ea50b5424aeb"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+window.signup = function(){
+
+let email = document.getElementById("email").value;
+
+let password = document.getElementById("password").value;
+
+createUserWithEmailAndPassword(auth, email, password)
+
+.then(() => {
+
+alert("Signup Success 🚀");
+
+window.location.href="dashboard.html";
+
+})
+
+.catch((error) => {
+
+alert(error.message);
+
+});
+
+}
+
+</script>
 
 </body>
 </html>
