@@ -1,81 +1,145 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="style.css">
+
+<title>Earnify Admin Panel</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+background:#0f172a;
+font-family:Arial;
+color:white;
+padding:20px;
+}
+
+.logo{
+font-size:35px;
+font-weight:bold;
+color:#22c55e;
+text-align:center;
+margin-bottom:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.user{
+background:#0f172a;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#22c55e;
+border:none;
+border-radius:10px;
+font-size:18px;
+color:white;
+}
+
+</style>
+
 </head>
+
 <body>
+
+<div class="logo">
+Earnify Admin 👑
+</div>
 
 <div class="card">
 
-<h1>Admin Panel</h1>
+<h2>Total Users</h2>
 
-<h2>Users</h2>
-
-<div id="users"></div>
-
-<h2>Withdraw Requests</h2>
-
-<div id="withdraws"></div>
+<h1 id="totalUsers">0</h1>
 
 </div>
 
-<script>
+<div class="card">
+
+<h2>User Database</h2>
+
+<div id="users"></div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getFirestore,
+collection,
+getDocs
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA-NBfTcaVj46RL-1kUeBsIqFszj2-deyA",
+
+authDomain: "earnify-8200f.firebaseapp.com",
+
+projectId: "earnify-8200f",
+
+storageBucket: "earnify-8200f.firebasestorage.app",
+
+messagingSenderId: "394402338930",
+
+appId: "1:394402338930:web:840ab87361ea50b5424aeb"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 
 async function loadUsers(){
 
-    const response =
-    await fetch("/admin/users");
+const querySnapshot =
+await getDocs(collection(db,"users"));
 
-    const users =
-    await response.json();
+document.getElementById("totalUsers")
+.innerHTML = querySnapshot.size;
 
-    let html = "";
+querySnapshot.forEach((doc)=>{
 
-    users.forEach(user=>{
+let data = doc.data();
 
-        html += `
-        <p>
-        ${user.username}
-        - ₹${user.balance}
-        </p>
-        `;
-    });
+document.getElementById("users")
+.innerHTML += `
 
-    document.getElementById(
-        "users"
-    ).innerHTML = html;
-}
+<div class="user">
 
-async function loadWithdraws(){
+<h3>${doc.id}</h3>
 
-    const response =
-    await fetch("/admin/withdraws");
+<p>Balance: ₹${data.balance}</p>
 
-    const withdraws =
-    await response.json();
+</div>
 
-    let html = "";
+`;
 
-    withdraws.forEach(w=>{
+});
 
-        html += `
-        <p>
-        ${w.username}
-        - ₹${w.amount}
-        - ${w.upi}
-        - ${w.status}
-        </p>
-        `;
-    });
-
-    document.getElementById(
-        "withdraws"
-    ).innerHTML = html;
 }
 
 loadUsers();
-loadWithdraws();
 
 </script>
 
