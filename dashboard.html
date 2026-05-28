@@ -1,57 +1,68 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
 
-<title>Earnify Dashboard</title>
+<title>Earnify Ultimate Dashboard</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
 body{
-background:#0f172a;
-font-family:Arial;
-color:white;
-padding:20px;
 margin:0;
+padding:20px;
+font-family:Arial;
+background:#0f172a;
+color:white;
 }
 
 .logo{
-font-size:35px;
+text-align:center;
+font-size:40px;
 font-weight:bold;
 color:#22c55e;
-text-align:center;
-margin-bottom:20px;
+margin-bottom:25px;
 }
 
 .card{
 background:#1e293b;
 padding:20px;
-border-radius:15px;
+border-radius:18px;
 margin-bottom:20px;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 
 .balance{
-font-size:40px;
-color:#22c55e;
+font-size:45px;
 font-weight:bold;
+color:#22c55e;
 }
 
 button{
 width:100%;
-padding:14px;
-background:#22c55e;
+padding:15px;
 border:none;
 border-radius:12px;
+background:#22c55e;
 font-size:18px;
+font-weight:bold;
 color:white;
-margin-top:10px;
+margin-top:12px;
 }
 
 input{
 width:100%;
 padding:12px;
 border:none;
+border-radius:10px;
+margin-top:10px;
+font-size:16px;
+}
+
+.task{
+background:#0f172a;
+padding:12px;
 border-radius:10px;
 margin-top:10px;
 }
@@ -68,7 +79,9 @@ Earnify 🚀
 
 <div class="card">
 
-<h2 id="user"></h2>
+<h2 id="user">
+Welcome User
+</h2>
 
 <p>Your Balance</p>
 
@@ -84,7 +97,7 @@ Claim Daily Reward
 
 <div class="card">
 
-<h2>Referral Code</h2>
+<h2>👥 Referral System</h2>
 
 <input type="text" id="refcode" readonly>
 
@@ -96,10 +109,37 @@ Copy Referral Code
 
 <div class="card">
 
-<h2>Withdraw</h2>
+<h2>📋 Tasks</h2>
 
-<input type="text" id="upi"
+<div class="task">
+✅ Watch Ads = ₹5
+</div>
+
+<div class="task">
+✅ Invite Friends = ₹20
+</div>
+
+<div class="task">
+✅ Daily Login = ₹2
+</div>
+
+<button onclick="taskReward()">
+Complete Task
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>💸 Withdraw Money</h2>
+
+<input type="text"
+id="upi"
 placeholder="Enter UPI ID">
+
+<input type="number"
+id="amount"
+placeholder="Enter Amount">
 
 <button onclick="withdrawMoney()">
 Request Withdraw
@@ -118,7 +158,9 @@ import {
 getFirestore,
 doc,
 setDoc,
-getDoc
+getDoc,
+collection,
+addDoc
 
 }
 
@@ -147,11 +189,16 @@ const db = getFirestore(app);
 let email =
 localStorage.getItem("userEmail");
 
+if(email){
+
 document.getElementById("user").innerHTML =
 "Welcome: " + email;
 
+}
+
 let userId =
-email.replace(/[^a-zA-Z0-9]/g,'');
+(email || "guest")
+.replace(/[^a-zA-Z0-9]/g,'');
 
 let balance = 0;
 
@@ -163,7 +210,7 @@ const snap = await getDoc(ref);
 
 if(snap.exists()){
 
-balance = snap.data().balance;
+balance = snap.data().balance || 0;
 
 document.getElementById("money").innerHTML =
 balance;
@@ -192,7 +239,22 @@ await setDoc(ref,{
 balance:balance
 });
 
-alert("Reward Added 🔥");
+alert("₹10 Reward Added 🔥");
+
+}
+
+window.taskReward = async function(){
+
+balance += 5;
+
+document.getElementById("money").innerHTML =
+balance;
+
+await setDoc(ref,{
+balance:balance
+});
+
+alert("Task Reward Added ✅");
 
 }
 
@@ -211,23 +273,35 @@ copyText.select();
 
 document.execCommand("copy");
 
-alert("Referral Code Copied");
+alert("Referral Code Copied 🚀");
 
 }
 
-window.withdrawMoney = function(){
+window.withdrawMoney = async function(){
 
 let upi =
 document.getElementById("upi").value;
 
-if(upi==""){
+let amount =
+document.getElementById("amount").value;
 
-alert("Enter UPI ID");
+if(upi=="" || amount==""){
+
+alert("Fill All Fields");
 
 }
 else{
 
-alert("Withdraw Request Submitted");
+await addDoc(collection(db,"withdraws"),{
+
+email:email,
+upi:upi,
+amount:amount,
+time:new Date().toLocaleString()
+
+});
+
+alert("Withdraw Request Submitted ✅");
 
 }
 
@@ -237,3 +311,4 @@ alert("Withdraw Request Submitted");
 
 </body>
 </html>
+```
