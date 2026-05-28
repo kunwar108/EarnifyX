@@ -40,6 +40,15 @@ font-size:35px;
 color:#00ff99;
 }
 
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-size:18px;
+}
+
 </style>
 </head>
 
@@ -59,6 +68,18 @@ color:#00ff99;
 
 <div class="box">
 
+<h2>Referral Code</h2>
+
+<input type="text" id="refcode" readonly>
+
+<button onclick="copyCode()">
+Copy Referral Code
+</button>
+
+</div>
+
+<div class="box">
+
 <h2>Daily Reward</h2>
 
 <button onclick="dailyReward()">
@@ -71,17 +92,11 @@ Claim ₹10 Reward
 
 <h2>Tasks</h2>
 
-<button>
-Watch Ads
-</button>
+<button>Watch Ads</button>
 
-<button>
-Complete Offers
-</button>
+<button>Complete Offers</button>
 
-<button>
-Refer Friends
-</button>
+<button>Refer Friends</button>
 
 </div>
 
@@ -111,6 +126,25 @@ balance = balance + 10;
 document.getElementById("money").innerHTML = balance;
 
 alert("₹10 Added Successfully 🔥");
+
+}
+
+let randomCode =
+"ERN" + Math.floor(Math.random()*100000);
+
+document.getElementById("refcode").value =
+randomCode;
+
+function copyCode(){
+
+let copyText =
+document.getElementById("refcode");
+
+copyText.select();
+
+document.execCommand("copy");
+
+alert("Referral Code Copied 🚀");
 
 }
 
